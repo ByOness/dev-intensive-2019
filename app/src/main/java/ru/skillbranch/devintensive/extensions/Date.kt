@@ -65,3 +65,27 @@ enum class TimeUnits {
         else 2
     }
 }
+
+fun Date.humanizeDiff(now:Date = Date()): String {
+    val diff:Long = now.time - this.time
+    return when (diff) {
+        in (Long.MIN_VALUE..TimeUnits.DAY*-360-1) -> "более чем через год"
+        in (TimeUnits.DAY*-360..TimeUnits.HOUR*-26-1) -> "через ${TimeUnits.DAY.plural(diff/86400000)}"
+        in (TimeUnits.HOUR*-26..TimeUnits.HOUR*-22-1) -> "через день"
+        in (TimeUnits.HOUR*-22..TimeUnits.MINUTE*-75-1) -> "через ${TimeUnits.HOUR.plural(diff/3600000)}"
+        in (TimeUnits.MINUTE*-75..TimeUnits.MINUTE*-45-1) -> "через час"
+        in (TimeUnits.MINUTE*-45..TimeUnits.SECOND*-75-1) -> "через ${TimeUnits.MINUTE.plural(diff/60000)}"
+        in (TimeUnits.SECOND*-75..TimeUnits.SECOND*-45-1) -> "через минуту"
+        in (TimeUnits.SECOND*-45..TimeUnits.SECOND*-1-1) -> "через несколько секунд"
+        in (TimeUnits.SECOND*-1..TimeUnits.SECOND*1) -> "только что"
+        in (TimeUnits.SECOND*1+1..TimeUnits.SECOND*45) -> "несколько секунд назад"
+        in (TimeUnits.SECOND*45+1..TimeUnits.SECOND*75) -> "минуту назад"
+        in (TimeUnits.SECOND*75+1..TimeUnits.MINUTE*45) -> "${TimeUnits.MINUTE.plural(diff/60000)} назад"
+        in (TimeUnits.MINUTE*45+1..TimeUnits.MINUTE*75) -> "час назад"
+        in (TimeUnits.MINUTE*75+1..TimeUnits.HOUR*22) -> "${TimeUnits.HOUR.plural(diff/3600000)} назад"
+        in (TimeUnits.HOUR*22+1..TimeUnits.HOUR*26) -> "день назад"
+        in (TimeUnits.HOUR*26+1..TimeUnits.DAY*360) -> "${TimeUnits.DAY.plural(diff/86400000)} назад"
+        in (TimeUnits.DAY*360+1..Long.MAX_VALUE) -> "более года назад"
+        else -> "никогда"
+    }
+}
